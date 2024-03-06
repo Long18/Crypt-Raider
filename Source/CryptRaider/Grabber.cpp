@@ -21,17 +21,6 @@ UGrabber::UGrabber()
 void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
-
-	UPhysicsHandleComponent* PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-
-	if (PhysicsHandle == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("No Physics Handle Component found on %s"), *GetOwner()->GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Display, TEXT("Physics Handle Component found on %s"), *PhysicsHandle->GetName());
-	}
 }
 
 
@@ -39,15 +28,25 @@ void UGrabber::BeginPlay()
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
+	if (PhysicsHandle == nullptr) return;
+
+	FVector TargetLocattion = GetComponentLocation() + GetForwardVector() * HoldDistance;
+	PhysicsHandle->SetTargetLocationAndRotation(TargetLocattion, GetComponentRotation());
 }
+
 
 void UGrabber::ReleaseObject()
 {
-	UE_LOG(LogTemp, Display, TEXT("Released"));
+	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
+	if (PhysicsHandle != nullptr) PhysicsHandle->ReleaseComponent();
 }
 
 void UGrabber::GrabObject()
 {
+	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
+	if (PhysicsHandle == nullptr) return;
+
 	FVector ReachLineStart = GetComponentLocation();
 	FVector ReachLineEnd = ReachLineStart + (GetForwardVector() * MaxGrabDistance);
 
@@ -66,8 +65,24 @@ void UGrabber::GrabObject()
 		Sphere);
 
 	if (!HasHit) return;
-	DrawDebugSphere(GetWorld(), HitResult.Location, 10, 10, FColor::Green, true, 5);
-	DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 10, FColor::Blue, true, 5);
-	UE_LOG(LogTemp, Display, TEXT("Hit: %s"), *HitResult.GetActor()->GetActorNameOrLabel());
+
+	PhysicsHandle->GrabComponentAtLocationWithRotation
+	(
+		HitResult.GetComponent(),
+		NAME_None,
+		HitResult.ImpactPoint,
+		GetComponentRotation()
+	);
+}
+
+UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
+{
+	UPhysicsHandleComponent* Result = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+
+	if (Result == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s missing physics handle component"), *GetOwner()->GetName())
+	}
+	return Result;
 }
 
