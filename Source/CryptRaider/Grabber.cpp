@@ -20,7 +20,7 @@ void UGrabber::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+
 }
 
 
@@ -29,6 +29,13 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	FRotator CurrentRotation = GetComponentRotation();
+	FString RotationString = CurrentRotation.ToCompactString();
+	UE_LOG(LogTemp, Warning, TEXT("Rotation: %s"), *RotationString);
+
+	UWorld* World = GetWorld();
+	float time = World->TimeSeconds;
+	UE_LOG(LogTemp, Warning, TEXT("Time: %f"), time);
 
 }
 
