@@ -7,7 +7,10 @@
 		{
 			"Name": "CryptRaider",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		}
 	],
 	"Plugins": [
@@ -17,7 +20,7 @@
 			"TargetAllowList": [
 				"Editor"
 			]
-			},
+		},
 		{
 			"Name": "Bridge",
 			"Enabled": true,
@@ -26,7 +29,6 @@
 				"Mac",
 				"Linux"
 			]
-
 		}
 	]
 }
