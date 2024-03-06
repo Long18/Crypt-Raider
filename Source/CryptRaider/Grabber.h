@@ -24,6 +24,11 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION(BlueprintCallable)
+	void ReleaseObject();
+
+	UFUNCTION(BlueprintCallable)
+	void GrabObject();
 
 private:
 	UPROPERTY(EditAnywhere)

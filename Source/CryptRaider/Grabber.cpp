@@ -30,7 +30,15 @@ void UGrabber::BeginPlay()
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
 
+void UGrabber::ReleaseObject()
+{
+	UE_LOG(LogTemp, Display, TEXT("Released"));
+}
+
+void UGrabber::GrabObject()
+{
 	FVector ReachLineStart = GetComponentLocation();
 	FVector ReachLineEnd = ReachLineStart + (GetForwardVector() * MaxGrabDistance);
 
