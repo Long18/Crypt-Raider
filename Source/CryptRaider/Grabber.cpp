@@ -35,5 +35,19 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	FVector ReachLineEnd = ReachLineStart + (GetForwardVector() * MaxGrabDistance);
 
 	DrawDebugLine(GetWorld(), ReachLineStart, ReachLineEnd, FColor::Red);
+
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
+	FHitResult HitResult;
+
+	bool HasHit = GetWorld()->SweepSingleByChannel(
+		HitResult,
+		ReachLineStart,
+		ReachLineEnd,
+		FQuat::Identity,
+		ECC_GameTraceChannel2,
+		Sphere);
+
+	if (!HasHit) return;
+	UE_LOG(LogTemp, Display, TEXT("Hit: %s"), *HitResult.GetActor()->GetActorNameOrLabel());
 }
 
